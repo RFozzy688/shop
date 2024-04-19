@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using shop.Data.Context;
 using shop.Data.Dal;
+using shop.Middleware;
 using shop.Services.Hash;
 using shop.Services.Kdf;
 
@@ -22,6 +23,14 @@ namespace shop
 
             builder.Services.AddSingleton<DataAccessor>();
 
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
             var app = builder.Build();
             if (!app.Environment.IsDevelopment())
             {
@@ -33,6 +42,8 @@ namespace shop
             app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthorization();
+            app.UseSession();
+            app.UseSessionAuth();
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");

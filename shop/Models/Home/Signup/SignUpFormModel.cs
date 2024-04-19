@@ -25,5 +25,7 @@ namespace shop.Models.Home.Signup
 
         [FromForm(Name = "signup-confirm")]
         public bool Confirm { get; set; }
+
+        public String? SavedFilename { get; set; }
     }
 }

@@ -67,7 +67,8 @@ namespace shop.Controllers
                 Registered = DateTime.Now,
                 Birthdate = formModel.Birthdate,
                 Salt = salt,
-                DerivedKey = _kdfService.GetDerivedKey(formModel.UserPassword, salt)
+                DerivedKey = _kdfService.GetDerivedKey(formModel.UserPassword, salt),
+                AvatarUrl = formModel.SavedFilename,
             };
         }
 
@@ -105,6 +106,21 @@ namespace shop.Controllers
                 if (!formModel.Confirm)
                 {
                     res[nameof(formModel.Confirm)] = "Confirm expected";
+                }
+
+                if (res.Count == 0)
+                {
+                    if (formModel.AvatarFile != null)
+                    {
+                        String ext = Path.GetExtension(formModel.AvatarFile.FileName);
+                        String path = Directory.GetCurrentDirectory() +
+                            "/wwwroot/img/avatars/";
+
+                        String savedName = Guid.NewGuid().ToString() + ext;
+                        using var stream = System.IO.File.OpenWrite(path + savedName);
+                        formModel.AvatarFile.CopyTo(stream);
+                        formModel.SavedFilename = savedName;
+                    }
                 }
             }
 

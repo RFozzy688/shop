@@ -1,5 +1,12 @@
-﻿<!DOCTYPE html>
-<html>
+﻿@using System.Security.Claims
+@{
+    bool isAuthenticated = Context.User.Identity?.IsAuthenticated ?? false;
+    String avatarSrc = isAuthenticated ? Context.User.Claims.First(c => c.Type == ClaimTypes.UserData).Value : "";
+    String userName = isAuthenticated ? Context.User.Claims.First(c => c.Type == ClaimTypes.Name).Value : "";
+}
+
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
@@ -11,26 +18,75 @@
 <body>
     <header>
         <nav class="navbar navbar-light bg-white border-bottom box-shadow mb-3 justify-content-end">
-            <a class="me-3 nav-link text-dark" 
-               asp-area="" 
-               asp-controller="Home" 
-               asp-action="SignUp">
-               Sign up
-            </a>
 
-            <a class="me-3 nav-link text-dark" 
-               asp-area="" 
-               asp-controller="Home" 
-               asp-action="SignIn">
-               Sign in
-            </a>
+            @if (isAuthenticated)
+            {
+                <b>@userName</b>
+                <img src="/img/avatars/@(avatarSrc)" />
+            }
+            else
+            {
+                <a class="me-3 nav-link text-dark"
+                   href="#"
+                   data-bs-toggle="modal"
+                   data-bs-target="#authModal">Sign in</a>
+            }
+
         </nav>
-        
+
     </header>
     <h1 class="text-center">@ViewBag.Title</h1>
     <div>
         @RenderBody()
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="~/js/script.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
-</html> 
+</html>
+
+<div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="authModalLabel">Вход в систему</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text"
+                          id="useremail-addon">
+                        <i class="bi bi-envelope-fill"></i>
+                    </span>
+                    <input type="text"
+                           class="form-control"
+                           placeholder="Email"
+                           aria-label="user-email"
+                           aria-describedby="auth-email-addon"
+                           id="auth-email"
+                           name="signup-email">
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text"
+                          id="userpassword-addon">
+                        <i class="bi bi-person-fill-lock"></i>
+                    </span>
+                    <input type="password"
+                           class="form-control"
+                           aria-label="Userpassword"
+                           aria-describedby="password-addon"
+                           placeholder="Пароль"
+                           id="auth-password"
+                           name="signup-password">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div id="auth-warning" class="alert alert-warning visually-hidden" role="alert"></div>
+                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="SignUp">Регистрация</a>
+                <button type="button" id="auth-button" class="btn btn-primary">Вход</button>
+            </div>
+        </div>
+    </div>
+</div>
