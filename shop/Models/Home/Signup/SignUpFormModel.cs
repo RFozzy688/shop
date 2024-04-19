@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace shop.Models.Home.Signup
 {
@@ -12,6 +13,9 @@ namespace shop.Models.Home.Signup
 
         [FromForm(Name = "signup-password")]
         public String UserPassword { get; set; }
+
+        [FromForm(Name = "signup-repeat")]
+        public String RepeatPassword { get; set; }
 
         [FromForm(Name = "signup-avatar")]
         public IFormFile AvatarFile { get; set; } = null!;

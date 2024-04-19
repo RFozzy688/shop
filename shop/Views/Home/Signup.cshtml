@@ -74,6 +74,19 @@
                        aria-describedby="userpassword-addon"
                        name="signup-password">
             </div>
+            @* повтор пароля *@
+            <div class="input-group mb-3">
+                <span class="input-group-text"
+                      id="repeatpassword-addon">
+                    <i class="bi bi-person-fill-lock"></i>
+                </span>
+                <input type="password"
+                       class="form-control"
+                       placeholder="Повторить пароль"
+                       aria-label="UserPassword"
+                       aria-describedby="repeatpassword-addon"
+                       name="signup-repeat">
+            </div>
             <p class="text-error">
                 @{
                     if ((Model.IsSuccess ?? true) == false)
@@ -128,6 +141,7 @@
                     }
                 }
             </p>
+
             @* отправить данные *@
             <button type="submit" class="btn btn-outline-secondary btn-size">Регистрация</button>
 

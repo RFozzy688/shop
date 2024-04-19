@@ -12,8 +12,8 @@ using shop.Data.Context;
 namespace shop.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240412152927_users")]
-    partial class users
+    [Migration("20240419185547_Users")]
+    partial class Users
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

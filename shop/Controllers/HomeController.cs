@@ -12,7 +12,6 @@ namespace shop.Controllers
         private readonly IHashService _hashService;
         private readonly IKdfService _kdfService;
         private readonly DataAccessor _dataAccessor;
-        public static int x = 0;
 
         public HomeController(
             IHashService hashService,
@@ -35,10 +34,9 @@ namespace shop.Controllers
             {
                 SignUpFormModel = formModel,
                 ValidationErrors = _ValidateSignUpModel(formModel),
-                Count = x++
             };
 
-            if (pageModel.Count != 0/*formModel?.UserEmail != null*/)
+            if (formModel?.UserEmail != null)
             {
                 if (pageModel.ValidationErrors.Count > 0)
                 {
@@ -93,6 +91,11 @@ namespace shop.Controllers
                 if (String.IsNullOrEmpty(formModel.UserPassword))
                 {
                     res[nameof(formModel.UserPassword)] = "Password is empty";
+                }
+
+                if (formModel.UserPassword != formModel.RepeatPassword)
+                {
+                    res[nameof(formModel.UserPassword)] = "Passwords mismatch";
                 }
 
                 if (!_dataAccessor.UserDao.IsEmailFree(formModel.UserEmail))

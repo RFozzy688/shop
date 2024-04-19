@@ -6,6 +6,6 @@
         public bool? IsSuccess { get; set; }
         public SignUpFormModel? SignUpFormModel { get; set; }
         public Dictionary<String, String> ValidationErrors { get; set; } = null!;
-        public int? Count { get; set; }
+        public String Error { get; set; } = "Error";
     }
 }
