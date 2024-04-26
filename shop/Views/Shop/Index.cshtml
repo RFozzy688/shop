@@ -1,0 +1,91 @@
+﻿@using System.Security.Claims
+@using shop.Data.Entites
+@{
+    Layout = "_ShopLayout";
+
+    bool isAuthenticated = Context.User.Identity?.IsAuthenticated ?? false;
+    String userName = isAuthenticated ? Context.User.Claims.First(c => c.Type == ClaimTypes.Name).Value : "";
+    var Categories = ViewData["Categories"] as List<Category> ?? [];
+}
+
+<div class="row justify-content-center">
+    @foreach (Category category in Categories)
+    {
+        <div class="col ctg-item">
+            <a asp-action="Category" asp-route-id="@(category.Slug)">
+                <img src="~/img/shop/@(category.ImageUrl)" />
+                <p>@category.Name</p>
+            </a>
+        </div>
+    }
+</div>
+
+
+@if (isAuthenticated && userName.CompareTo("admin") == 0)
+{
+    <div class="row justify-content-end">
+        <div class="col col-4">
+            <h2>Добавить новую группу товаров</h2>
+            <form id="category-form" method="post" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="category-name">
+                                <i class="bi bi-box-fill"></i>
+                            </span>
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="Название"
+                                   aria-describedby="category-name"
+                                   name="category-name">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="category-slug">
+                                <i class="bi bi-diagram-2-fill"></i>
+                            </span>
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="Ссылка"
+                                   aria-describedby="category-slug"
+                                   name="category-slug">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">
+                                <i class="bi bi-card-text"></i>
+                            </span>
+                            <textarea class="form-control"
+                                      placeholder="Описание"
+                                      name="category-description"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="category-image">
+                                <i class="bi bi-upload"></i>
+                            </label>
+                            <input type="file"
+                                   class="form-control"
+                                   id="category-image"
+                                   name="category-image">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <button type="submit">Добавить</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+}

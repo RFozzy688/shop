@@ -6,23 +6,27 @@ namespace shop.Data.Dal
 {
     public class UserDao
     {
-        private readonly IKdfService _kdfService;
         private readonly DataContext _context;
-
-        public UserDao(DataContext context, IKdfService kdfService)
+        private readonly IKdfService _kdfService;
+        private readonly Object _dbLocker;
+        public UserDao(DataContext context, IKdfService kdfService, object dbLocker)
         {
             _context = context;
             _kdfService = kdfService;
-        }
-        public bool IsEmailFree(String email)
-        {
-            return !_context.Users.Where(u => u.Email == email).Any();
+            _dbLocker = dbLocker;
         }
 
         public User? GetUserById(String id)
         {
-            try { return _context.Users.Find(Guid.Parse(id)); }
-            catch { return null; }
+            User? user;
+
+            lock (_dbLocker)
+            {
+                try { user = _context.Users.Find(Guid.Parse(id)); }
+                catch { user = null; }
+            }
+
+            return user;
         }
 
         public User? Authenticate(String email, String password)
@@ -35,6 +39,10 @@ namespace shop.Data.Dal
             }
 
             return null;
+        }
+        public bool IsEmailFree(String email)
+        {
+            return !_context.Users.Where(u => u.Email == email).Any();
         }
 
         public void SignupUser(User user)
