@@ -13,8 +13,8 @@
     <Folder Include="Data\Dal\" />
     <Folder Include="Models\Home\Signin\" />
     <Folder Include="Models\Home\Signup\" />
-    <Folder Include="Services\" />
     <Folder Include="wwwroot\img\avatars\" />
+    <Folder Include="wwwroot\upload\" />
   </ItemGroup>
 
   <ItemGroup>

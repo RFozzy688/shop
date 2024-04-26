@@ -3,6 +3,7 @@ using shop.Data.Dal;
 using shop.Models.Home.Signup;
 using shop.Services.Hash;
 using shop.Services.Kdf;
+using shop.Services.Upload;
 using System;
 
 namespace shop.Controllers
@@ -12,15 +13,18 @@ namespace shop.Controllers
         private readonly IHashService _hashService;
         private readonly IKdfService _kdfService;
         private readonly DataAccessor _dataAccessor;
+        private readonly IUploadServise _uploadServise;
 
         public HomeController(
             IHashService hashService,
             IKdfService kdfService,
-            DataAccessor dataAccessor)
+            DataAccessor dataAccessor,
+            IUploadServise uploadServise)
         {
             _hashService = hashService;
             _kdfService = kdfService;
             _dataAccessor = dataAccessor;
+            _uploadServise = uploadServise;
         }
 
         public ViewResult Index()
@@ -112,14 +116,15 @@ namespace shop.Controllers
                 {
                     if (formModel.AvatarFile != null)
                     {
-                        String ext = Path.GetExtension(formModel.AvatarFile.FileName);
-                        String path = Directory.GetCurrentDirectory() +
-                            "/wwwroot/img/avatars/";
-
-                        String savedName = Guid.NewGuid().ToString() + ext;
-                        using var stream = System.IO.File.OpenWrite(path + savedName);
-                        formModel.AvatarFile.CopyTo(stream);
-                        formModel.SavedFilename = savedName;
+                        try
+                        {
+                            formModel.SavedFilename = _uploadServise.SaveFormFile(
+                                formModel.AvatarFile, "wwwroot/img/avatars/");
+                        }
+                        catch (Exception ex)
+                        {
+                            res[nameof(formModel.AvatarFile)] = ex.Message;
+                        }
                     }
                 }
             }

@@ -4,6 +4,7 @@ using shop.Data.Dal;
 using shop.Middleware;
 using shop.Services.Hash;
 using shop.Services.Kdf;
+using shop.Services.Upload;
 
 namespace shop
 {
@@ -22,6 +23,7 @@ namespace shop
             );
 
             builder.Services.AddSingleton<DataAccessor>();
+            builder.Services.AddSingleton<IUploadServise, UploadServiceV1>();
 
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options =>
