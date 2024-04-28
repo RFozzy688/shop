@@ -42,5 +42,54 @@ namespace shop.Data.Dal
                 _context.SaveChanges();
             }
         }
+
+        public string GetCategoryId(string slug)
+        {
+            string id;
+
+            lock (_dbLocker)
+            {
+                id = _context.Categories.Where(c => slug.CompareTo(c.Slug) == 0).FirstOrDefault().Id.ToString();
+            }
+            return id;
+        }
+
+        public List<Product> GetProducts(string categoryId)
+        {
+            List<Product> res;
+
+            lock (_dbLocker)
+            {
+                res = _context.Products.Where(p => categoryId.CompareTo(p.CategoryId.ToString()) == 0).ToList();
+            }
+
+            return res;
+        }
+
+        public Product AddProduct(Guid? categortId, String name, Double price, String description, String imageUrl)
+        {
+            Product product = new()
+            {
+                Name = name,
+                Price = price,
+                Description = description,
+                ImageUrl = imageUrl,
+                CategoryId = categortId,
+
+                IsActive = true,
+                Id = Guid.NewGuid(),
+            };
+            return AddProduct(product);
+        }
+
+        public Product AddProduct(Product product)
+        {
+            lock (_dbLocker)
+            {
+                _context.Products.Add(product);
+                _context.SaveChanges();
+            }
+            return product;
+        }
     }
 }

@@ -1,0 +1,94 @@
+﻿@model shop.Models.Shop.ShopCategoryPageModel
+@using System.Security.Claims
+@using shop.Data.Entites
+
+@{
+    Layout = "_ShopLayout";
+    bool isAuthenticated = Context.User.Identity?.IsAuthenticated ?? false;
+    var Products = ViewData["Products"] as List<Product> ?? [];
+    String userName = isAuthenticated ? Context.User.Claims.First(c => c.Type == ClaimTypes.Name).Value : "";
+}
+<h1>Category @Model.Slug</h1>
+
+<div class="row justify-content-center box-items">
+    @foreach (var product in Products)
+    {
+        <div class="prt-box">
+            <img src="~/img/shop/@(product.ImageUrl)" class="prt-img" />
+            <div class="description">
+                <p>Название: @product.Name</p>
+                <p>Цена: @product.Price</p>
+                <p>Описание: @product.Description</p>
+            </div>
+            
+        </div>
+    }
+</div>
+
+@if (isAuthenticated && userName.CompareTo("admin") == 0)
+{
+    <div class="row justify-content-end">
+        <div class="col col-4">
+            <h2>Добавить товаров</h2>
+            <form id="product-form" method="post" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="product-name">
+                                <i class="bi bi-box-fill"></i>
+                            </span>
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="Название"
+                                   aria-describedby="product-name"
+                                   name="product-name">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="product-price">
+                                <i class="bi bi-cash"></i>
+                            </span>
+                            <input type="number"
+                                   class="form-control"
+                                   placeholder="Цена"
+                                   aria-describedby="product-price"
+                                   name="product-price">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                            <textarea class="form-control"
+                                      placeholder="Описание"
+                                      name="product-description"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <label class="input-group-text" for="product-image">
+                                <i class="bi bi-upload"></i>
+                            </label>
+                            <input type="file"
+                                   class="form-control"
+                                   id="product-image"
+                                   name="product-image">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <button type="submit">Отправить</button>
+                    </div>
+                </div>
+                <input type="hidden" name="category-id" value="@Model.CategoryId" />
+            </form>
+        </div>
+    </div>
+}

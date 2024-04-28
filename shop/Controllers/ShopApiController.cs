@@ -45,5 +45,37 @@ namespace shop.Controllers
             }
         }
 
+        [HttpPost("product")]
+        public object AddProduct(ShopProductFormModel model)
+        {
+            if (model?.Price == null ||
+                String.IsNullOrEmpty(model.Name) ||
+                String.IsNullOrEmpty(model.Description))
+            {
+                Response.StatusCode = StatusCodes.Status422UnprocessableEntity;
+
+                return "Missing required data";
+            }
+            
+            try
+            {
+                _dataAccessor.ShopDao.AddProduct(
+                    categortId: model.CategoryId,
+                    name: model.Name,
+                    description: model.Description,
+                    price: model.Price,
+                    imageUrl: _uploadServise.SaveFormFile(model.Image, "wwwroot/img/shop")
+                );
+
+                Response.StatusCode = StatusCodes.Status201Created;
+
+                return "Ok";
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = StatusCodes.Status422UnprocessableEntity;
+                return ex.Message;
+            }
+        }
     }
 }

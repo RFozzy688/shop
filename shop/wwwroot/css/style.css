@@ -59,8 +59,29 @@ body{
     margin: 10px;
 }
 
-    .ctg-item img {
-        border-radius: 50%;
-        max-width: 70px;
-        height: 70px;
-    }
+.ctg-item img {
+    border-radius: 50%;
+    max-width: 70px;
+    height: 70px;
+}
+
+.box-items {
+    display: flex;
+    flex-direction: column;
+}
+
+.prt-img {
+    width: 150px;
+    height: 200px;
+    margin-right: 20px;
+}
+
+.prt-box {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.description {
+    display: flex;
+    flex-direction: column;
+}

@@ -18,6 +18,25 @@
             }
         });
     }
+
+    if (form.id == 'product-form') {
+        e.preventDefault();
+
+        let formData = new FormData(form);
+        fetch("/api/shop/product", {
+            method: 'POST',
+            body: formData
+        }).then(r => {
+            console.log(r);
+
+            if (r.status == 201) {
+                window.location.reload();
+            }
+            else {
+                r.text().then(alert);
+            }
+        });
+    }
 })
 
 document.addEventListener('DOMContentLoaded', () => {

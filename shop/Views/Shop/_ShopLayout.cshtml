@@ -60,7 +60,9 @@
                 }
                 @foreach (Category category in Categories)
                 {
-                    <p>@category.Name</p>
+                    <a asp-action="Category" asp-route-id="@(category.Slug)">
+                        <p>@category.Name</p>
+                    </a>
                 }
             </div>
             <div class="col col-9">
